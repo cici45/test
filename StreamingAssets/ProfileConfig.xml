@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ProfileData>
+	<data Name="设备名称">MK-E-5</data>
+	<data Name="比例系数">1</data>
+	<data Name="单位">度</data>
+	<data Name="model">2</data>
+	<data Name="接口IP">110.41.9.150:8889</data>
+	<data Name="Sample_Time">8</data>
+	<data Name="Delay_Accept_Time">2</data>
+  <data Name="关节活动度">0_30_60_90_120_150</data>
+  <data Name="肌力">0_1_2_3_4_5</data>
+  <data Name="耐力">0_1_2_3_4_5</data>
+  <data Name="肌力系数">1_1_1</data>
+  <data Name="耐力系数">1_1_1</data>
+  <data Name="TSet">5</data>
+  <data Name="预准备倒计时">10</data>
+  <data Name="医院名称">珠海市香洲区翠微社区卫生服务中心</data>
+</ProfileData>

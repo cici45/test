@@ -1,0 +1,46 @@
+#ifndef SER
+#define SER
+
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <windows.h>
+
+#include <string>
+
+using namespace std;
+
+class ser {
+public:
+	void WaitSec(int num);
+        void InitCom(int port, char databits, char stopbits, char parity, int baudrate);
+	char ComStatus(int port);
+
+	bool init(char portname[8], unsigned char databits, unsigned char stopbits, unsigned char parity, unsigned long baudrate);
+
+	bool write(string str, int length);
+
+
+	bool read(string *str, int length, unsigned long *lread);
+
+	unsigned int write(unsigned char str[], int length);
+        
+	unsigned int read(unsigned char str[], int length, unsigned long *lread);
+
+	bool close();
+	bool flush();
+
+	HANDLE *handlePort_;
+	DCB * config_;
+
+	char *portname;
+
+        void Clear_Memory();
+        UINT GetDataSize() ;
+
+
+
+};
+
+#endif
+

@@ -1,0 +1,227 @@
+//---------------------------------------------------------------------------
+
+
+#pragma hdrstop
+
+#include "Encorder_Driver.h"
+
+//---------------------------------------------------------------------------
+
+Encoder_Driver :: Encoder_Driver()
+{
+          Angle_Old=0;
+          Angle_New=0;
+
+       Circle_Counter=0;
+
+             _di_IXMLDocument xml;
+
+          WideString Version = L"1.0";
+         xml=NewXMLDocument(Version);
+         xml->LoadFromFile("Encorder.xml") ;
+
+         _di_IXMLNode root = xml->GetDocumentElement();
+
+          _di_IXMLNode node ;
+          AnsiString Temp;
+          WideString Temp_Cap;
+
+           Temp_Cap="Encorder_ID";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+            Encorder_ID=Temp.ToInt();
+
+          Temp_Cap="Com_ID";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          Com_Address=Temp;
+
+
+          Temp_Cap="Encorder_Puls";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          Encorder_Puls=Temp.ToInt();
+
+          Temp_Cap="Baudrate";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          Baudrate=Temp.ToInt();
+
+
+          Temp_Cap="Position_Offset";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          Position_Offset=Temp.ToDouble();
+
+          Temp_Cap="Position_Dir";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          Position_Dir=Temp.ToInt();
+
+          Temp_Cap="MutiCircle_Select";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          MutiCircle_Select=Temp.ToInt();
+
+
+
+          Encorder_Puls_Read=0;
+
+        Com_232= new ser;
+
+    bool Temp_Com= Com_232->init(Com_Address.c_str(), 8,ONESTOPBIT, NOPARITY, Baudrate);
+
+    First_Start=1;
+ /*//ÉèÖÃ²éÑ¯
+   Send_Buff[0] =0x01;
+  Send_Buff[1] =0x06;
+  Send_Buff[2] =0x00;
+  Send_Buff[3] =0x00;
+  Send_Buff[4] =0x00;
+  Send_Buff[5] =0x06;
+
+  unsigned int Data_Read=Crc_Count(Send_Buff,6);
+
+
+  Send_Buff[7] =(Data_Read&0xFF00)>>8;
+  Send_Buff[6] =Data_Read&0xFF;
+
+  Com_232->write(Send_Buff,8);  */
+
+
+}
+
+Encoder_Driver ::  ~Encoder_Driver()
+{
+  Com_232->close();
+}
+
+double Encoder_Driver :: Read_Angle()
+{
+double Temp=(double)(Read_Puls()*360)/Encorder_Puls;
+       Temp= (double)((int)(Temp*1000+0.5)) /1000-Position_Offset;
+        Angle_New= Temp;
+       if(First_Start)
+          {
+          First_Start=0;
+          }
+          else
+          {
+          if(Angle_New-Angle_Old<-180)
+            {
+
+             Circle_Counter++;
+             }
+
+           if(Angle_New-Angle_Old>180)
+               {
+               Circle_Counter--;
+               }
+           }
+         Angle_Old=Angle_New;
+
+         Temp=Temp+MutiCircle_Select*Circle_Counter*360  ;
+
+          Temp=Position_Dir*Temp;
+
+
+
+return  Temp;
+}
+
+long long int Encoder_Driver :: Read_Puls()
+{
+  Send_Buff[0] =0x01;
+  Send_Buff[1] =0x03;
+  Send_Buff[2] =0x00;
+  Send_Buff[3] =0x00;
+  Send_Buff[4] =0x00;
+  Send_Buff[5] =0x01;
+
+  unsigned int Data_Read=Crc_Count(Send_Buff,6);
+
+
+  Send_Buff[7] =(Data_Read&0xFF00)>>8;
+  Send_Buff[6] =Data_Read&0xFF;
+
+  Com_232->write(Send_Buff,8);
+   Sleep(10);
+
+   for(int i=0;i<18;i++)
+   {
+     Read_Buff[i]=0;
+   }
+
+ // Com_232->read(Read_Buff,7,NULL);
+
+ if(Com_232->GetDataSize()>=7)
+ {
+  
+ Com_232->read(Read_Buff,7,NULL);
+ Com_232->Clear_Memory();
+ Com_232->flush();
+
+ for(int i=0; i<7;i++)
+  {
+ if(Read_Buff[i+0]==Encorder_ID&&Read_Buff[i+1]==0x03)
+    {
+      long long int Data[4]={0,0,0,0};
+     // Data[0]=(Read_Buff[i+3]&0xFF)<<24;
+      //Data[1]=(Read_Buff[i+4]&0xFF)<<16;
+      Data[2]=(Read_Buff[i+3]&0xFF)<<8;
+      Data[3]=(Read_Buff[i+4]&0xFF);
+
+   //Encorder_Puls_Read=(Read_Buff[i+3]&0xFF)<<24+ (Read_Buff[i+4]&0xFF)<<16+(Read_Buff[i+5]&0xFF)<<8+(Read_Buff[i+6]&0xFF);
+     //Encorder_Puls_Read=Data[0]+Data[1]+Data[2]+Data[3];
+
+      int CRC_Sum=0;
+      CRC_Sum=Crc_Count(Read_Buff,5) ;
+      long int Tem_CRC_H=(Read_Buff[i+6]&0xff)<<8;
+      long int Tem_CRC_L=Read_Buff[i+5]&0xff;
+
+      if(CRC_Sum==(Tem_CRC_H+Tem_CRC_L))
+      {
+
+     if(Data[2]+Data[3]==0)
+       {
+        break;
+       }
+        Encorder_Puls_Read=Data[2]+Data[3];
+     return  Encorder_Puls_Read;
+       }
+     break;
+    }
+
+  }
+
+ }
+ return Encorder_Puls_Read;
+}
+
+
+
+unsigned int Encoder_Driver ::Crc_Count(unsigned char pbuf[],unsigned char num)
+{
+int i,j; unsigned int wcrc=0xffff;
+for(i=0;i<num;i++)
+{
+wcrc^=(unsigned int)(pbuf[i]);
+for (j=0;j<8;j++)
+  {
+
+  if(wcrc&0x0001)
+  {
+  wcrc>>=1; wcrc^=0xa001;
+   }
+   else
+   {
+   wcrc>>=1;
+   }
+  }
+}
+return wcrc;
+}
+
+
+
+#pragma package(smart_init)

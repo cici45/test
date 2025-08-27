@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Com_Setting>
+
+	<Senser_Type>3</Senser_Type> <!--0:Encorder_Circle/1:Encorder_Cable/2:Force_AD/3:Scanner-->>
+	<Com_ID>COM8</Com_ID>		
+	<Baudrate>9600</Baudrate>
+	<Data_Bits>8</Data_Bits>
+	<Parity_Set>0</Parity_Set> <!-- 0:None/1:Odd/2:Even,-->>
+	<Stop_Bits>1</Stop_Bits><!--0:0/ 1:1 /2:2 /3:1.5-->
+	<Sampling_Time_ms>50</Sampling_Time_ms>	
+	<Encorder>
+		<Encorder_Puls>16384</Encorder_Puls>
+		<Encorder_ID>1</Encorder_ID>		
+		<Position_Dir>1</Position_Dir>
+		<Position_Offset>0</Position_Offset>
+		<MutiCircle_Select>0</MutiCircle_Select>
+	</Encorder>
+	
+	<Force_AD>
+		<Sensor_1_ID>0</Sensor_1_ID>
+		<Sensor_2_ID>1</Sensor_2_ID>
+		<Sensor_3_ID>2</Sensor_3_ID>
+		<Sensor_4_ID>3</Sensor_4_ID>
+
+		<Sensor_1_Offset>0</Sensor_1_Offset>
+		<Sensor_2_Offset>0</Sensor_2_Offset>
+		<Sensor_3_Offset>0</Sensor_3_Offset>
+		<Sensor_4_Offset>0</Sensor_4_Offset>
+
+		<Force_Ratio>1</Force_Ratio>
+
+
+		<Base_Board_Length>440</Base_Board_Length>
+		<Base_Board_Width>277</Base_Board_Width>
+
+		<Sensor_1_x>45</Sensor_1_x>
+		<Sensor_1_y>277</Sensor_1_y>
+		<Sensor_2_x>395</Sensor_2_x>
+		<Sensor_2_y>277</Sensor_2_y>
+		<Sensor_3_x>440</Sensor_3_x>
+		<Sensor_3_y>0</Sensor_3_y>
+		<Sensor_4_x>0</Sensor_4_x>
+		<Sensor_4_y>0</Sensor_4_y>
+		
+		<!-- AD sensor position 
+		       1   2
+			 4      3		
+		-->
+
+	</Force_AD>
+	
+
+</Com_Setting>

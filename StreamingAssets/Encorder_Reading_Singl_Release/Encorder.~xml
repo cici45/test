@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- New XML document Encorder V1.0 -->
+
+<Encorder>
+ <Encorder_ID>1</Encorder_ID>
+ <Com_ID>COM5</Com_ID>
+ <Encorder_Puls>16384</Encorder_Puls>
+ <Baudrate>9600</Baudrate>
+ <Position_Offset>0</Position_Offset>
+ <Position_Dir>-1</Position_Dir>
+ <MutiCircle_Select>0</MutiCircle_Select>
+</Encorder>

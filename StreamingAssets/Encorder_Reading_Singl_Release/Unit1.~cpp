@@ -1,0 +1,159 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma link "MsTimer"
+#pragma resource "*.dfm"
+TForm1 *Form1;
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+        : TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button2Click(TObject *Sender)
+{
+MsTimer1->Enabled=false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button1Click(TObject *Sender)
+{
+MsTimer1->Enabled=true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::FormCreate(TObject *Sender)
+{
+    MsTimer1->Enabled=false;
+    First_Connection=0;
+    Connected_Sucess=0;
+   MsTimer1->Interval=50;
+
+   Postion_Read= new Encoder_Driver();
+   Form1->DoubleBuffered=true;
+   First_Connection=1;
+  MsTimer1->Enabled=true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::MsTimer1Timer(TObject *Sender)
+{
+Form1->Hide();
+  Timer_Runing_Sign=1;
+
+ if(!First_Connection)
+  {
+  double Temp= Postion_Read->Read_Angle();
+  Edit1->Text=  Temp;
+  Form1->Refresh();
+  TCPIP_Send(Temp) ;
+  }
+  else
+  {
+   MsTimer1->Enabled=false;
+   Set_TCPIP() ;
+
+ while(!Connected_Sucess)
+   {
+    if(Timer_Count++>100)
+    {
+
+    MsTimer1->Enabled=false;
+    //MessageBox(0,"ÄÚÍøÁ´½ÓÊ§°Ü,ÇëÖØÆô","Á´½ÓÊ§°Ü",MB_OK);
+    Form2->Show();
+
+       goto END;
+    }
+    Sleep(10);
+    Application->ProcessMessages()  ;
+   }
+    First_Connection=0;
+
+   MsTimer1->Enabled=true;
+
+  }
+ END: Timer_Runing_Sign=0;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::FormClose(TObject *Sender, TCloseAction &Action)
+{
+  while(Timer_Runing_Sign)
+  {
+  MsTimer1->Enabled=false;
+  Application->ProcessMessages();
+  }
+}
+//---------------------------------------------------------------------------
+void TForm1::Set_TCPIP()
+{
+         CoInitialize(NULL);
+          _di_IXMLDocument xml;
+
+          WideString Version = L"1.0";
+         xml=NewXMLDocument(Version);
+         xml->LoadFromFile("Internet.xml") ;
+
+         _di_IXMLNode root = xml->GetDocumentElement();
+
+          _di_IXMLNode node ;
+          AnsiString Temp;
+          WideString Temp_Cap;
+
+           Temp_Cap="Sever_IP";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          ClientSocket1->Host =Temp;
+
+          Temp_Cap="Port";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          ClientSocket1->Port=Temp.ToInt();
+
+          Temp_Cap="Local_IP";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          ClientSocket1->Address=Temp;
+
+
+          Temp_Cap="Send_Timer_INV_ms";
+          node = root->ChildNodes->FindNode(Temp_Cap);
+          Temp= node->Text;
+          MsTimer1->Interval=Temp.ToInt();
+
+
+ if(ClientSocket1->Active)
+ {
+ ClientSocket1->Active = false;
+ }
+
+
+ ClientSocket1->Active = true;
+ Application->ProcessMessages();
+
+
+}
+ void TForm1::TCPIP_Send(double Position)
+ {
+  AnsiString Send_Data=Position;
+  Send_Data= "Start_"+Send_Data+"_End";
+  ClientSocket1->Socket->SendText(Send_Data);
+ }
+void __fastcall TForm1::ClientSocket1Connecting(TObject *Sender,
+      TCustomWinSocket *Socket)
+{
+ // Connected_Sucess=1;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::ClientSocket1Connect(TObject *Sender,
+      TCustomWinSocket *Socket)
+{
+  Connected_Sucess=1;
+}
+//---------------------------------------------------------------------------
+
+

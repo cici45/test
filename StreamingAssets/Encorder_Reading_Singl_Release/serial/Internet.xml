@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- New XML document Internet V1.0 -->
+
+<Internet>
+ <Sever_IP>127.0.0.1</Sever_IP>
+ <Port>6688</Port>
+<Local_IP>127.0.0.100</Local_IP>
+<Send_Timer_INV_ms>50</Send_Timer_INV_ms>
+</Internet>

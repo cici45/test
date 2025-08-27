@@ -1,0 +1,8 @@
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\bin\Debug\Com_Test.exe.config
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\bin\Debug\Com_Test.exe
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\bin\Debug\Com_Test.pdb
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\obj\Debug\Com_Test.csproj.AssemblyReference.cache
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\obj\Debug\Com_Test.csproj.SuggestedBindingRedirects.cache
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\obj\Debug\Com_Test.csproj.CoreCompileInputs.cache
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\obj\Debug\Com_Test.exe
+F:\kuaipan\project_China\C产品开发\S 社区项目\代码\c#\com\Com_Test\obj\Debug\Com_Test.pdb
